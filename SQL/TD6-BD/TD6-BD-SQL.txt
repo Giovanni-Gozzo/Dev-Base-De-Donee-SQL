@@ -1,0 +1,291 @@
+------------------------------------------
+—Question 1
+------------------------------------------
+
+SELECT nom, prenom, adresse
+FROM Demandeur
+
+------------------------------------------
+— Question 2
+------------------------------------------
+
+SELECT nome, adre
+FROM Entreprise
+WHERE adre LIKE '%(USA)'
+
+------------------------------------------
+— Question 3
+------------------------------------------
+SELECT DISTINCT nome, adre
+FROM Entreprise e 
+Where e.nume=o.nume
+
+------------------------------------------
+— Question 4
+------------------------------------------
+SELECT qualif
+FROM Offre
+WHERE salaire > 3000
+
+------------------------------------------
+— Question 5
+------------------------------------------
+SELECT DISTINCT nom, prenom
+FROM Demandeur d ,OFFRE o
+WHERE d.qualif=o.qualif
+
+------------------------------------------
+— Question 6
+------------------------------------------
+SELECT nom, numd
+FROM Demandeur
+MINUS
+SELECT nom, numd
+FROM Demandeur d ,OFFRE o
+WHERE d.qualif=o.qualif
+
+------------------------------------------
+— Question 7
+------------------------------------------
+SELECT nome
+FROM Entreprise
+MINUS
+SELECT nome
+FROM Entreprise e,OFFRE o
+WHERE e.nume = o.nume
+
+------------------------------------------
+— Question 8
+------------------------------------------
+SELECT DISTINCT nome
+FROM Entreprise e
+WHERE adre LIKE '%(USA)'
+UNION
+SELECT DISTINCT nome
+FROM Entreprise e,OFFRE o
+WHERE e.nume = o.nume
+AND Salaire >= 2000
+
+------------------------------------------
+— Question 9
+------------------------------------------
+SELECT nome
+FROM Entreprise e,OFFRE o
+WHERE e.nume = o.nume
+MINUS
+SELECT nome
+FROM Entreprise e,OFFRE o 
+WHERE e.nume = o.nume
+AND contrat != 'CDI'
+
+------------------------------------------
+— Question 10
+------------------------------------------
+SELECT nome
+FROM Entreprise e
+MINUS
+SELECT nome FROM (
+    SELECT nome, contrat
+    FROM Entreprise e, Offre o
+    MINUS
+    SELECT nome, contrat
+    FROM Entreprise e,OFFRE o
+    WHERE e.nume=o.nume)
+    
+------------------------------------------
+— Question 11
+------------------------------------------
+SELECT nome
+FROM Entreprise e, OFFRE o
+WHERE e.nume=o.nume
+AND qualif='Developpeur'
+INTERSECT
+SELECT nome
+FROM Entreprise e,OFFRE o
+WHERE e.nume=o.nume
+AND qualif='AdminSys'
+
+------------------------------------------
+— Question 12
+------------------------------------------
+SELECT DISTINCT e.nume
+FROM Entreprise e, OFFRE o,OFFRE o2
+WHERE e.nume=o.nume
+AND o.numo != o2.numo 
+AND o.nume = o2.nume
+
+------------------------------------------
+— Question 13
+------------------------------------------
+SELECT DISTINCT nom, prenom
+FROM Demandeur d, OFFRE o, OFFRE o2, OFFRE o3
+WHERE d.qualif=o.qualif
+AND o.numo != o2.numo 
+AND o2.numo != o3.numo 
+AND o.numo != o3.numo 
+AND o.qualif = o2.qualif 
+AND o2.qualif = o3.qualif 
+AND o.qualif = o3.qualif
+
+------------------------------------------
+— Question 14
+------------------------------------------
+SELECT nom, prenom, numd
+FROM Demandeur d
+MINUS 
+SELECT nom, prenom, numd
+FROM Demandeur d,OFFRE o
+WHERE d.qualif=o.qualif
+AND salaire <= 1600
+INTERSECT
+SELECT nom, prenom, numd
+FROM Demandeur dn OFFRE o,OFFRE o2
+WHERE d.qualif=o.qualif
+AND o.numo != o2.numo 
+AND o.qualif = o2.qualif 
+AND O.salaire > 2000 
+AND o2.salaire > 2000
+
+------------------------------------------
+— Question 15
+------------------------------------------
+SELECT numo
+FROM Offre
+MINUS
+SELECT o.numo
+FROM Offre o, Offre o2
+WHERE o.salaire < o2.salaire
+
+------------------------------------------
+— Question 16
+------------------------------------------
+SELECT d.nom, d.prenom
+FROM Demandeur d, DEMANDEUR d2
+WHERE d.qualif = d2.qualif
+AND d2.nom = 'Dalors' 
+AND d.nom != ‘Dalors'
+
+
+---------------------------------------BD CINEMA--------------------------------------------------
+
+------------------------------------------
+—Acteur(numa,nom) 
+—Film(numf,titre,prod,real) 
+—Joue(#numf,#numa) 
+—Projette(nums,datep,#numf) 
+------------------------------------------
+
+------------------------------------------
+— Question 1
+------------------------------------------
+SELECT titre
+FROM Film 
+WHERE real LIKE 'Mickael%'
+
+------------------------------------------
+— Question 2
+------------------------------------------
+SELECT nom
+FROM Acteur a, JOUE j
+WHERE a.numa = j.numa
+AND j.numf = '4'
+
+------------------------------------------
+— Question 3
+------------------------------------------
+SELECT titre
+FROM Film f, PROJETTE p
+WHERE f.numf=p.numf
+AND nums='2'
+
+------------------------------------------
+— Question 4
+------------------------------------------
+SELECT real
+FROM Film 
+WHERE prod=real
+
+------------------------------------------
+— Question 5
+------------------------------------------
+SELECT real
+FROM Film f, JOUE j, ACTEUR a
+WHERE f.numf=j.numf
+AND a.numa=j.numa
+AND f.real=a.nom
+
+------------------------------------------
+— Question 6
+------------------------------------------
+SELECT nom, numa
+FROM Acteur
+MINUS
+SELECT nom, numa FROM(
+    SELECT nom, numa, numf
+    FROM Acteur a, Film
+    MINUS
+    SELECT nom, a.numa, numf
+    FROM Acteur a, JOUE j 
+    WHERE a.numa=j.numa) 
+
+------------------------------------------
+—Question 7
+------------------------------------------
+SELECT nom, numa
+FROM Acteur
+MINUS
+SELECT nom, numa FROM(
+    SELECT nom, numa, numf
+    FROM Acteur a, Film
+    WHERE real='Spielberg'
+    MINUS
+    SELECT nom, a.numa, numf
+    FROM Acteur a, JOUE j 
+    WHERE a.numa=j.numa) 
+
+------------------------------------------
+—Question 8
+------------------------------------------
+SELECT f.titre
+FROM FILM f
+WHERE real='Spielberg'
+UNION
+SELECT f.titre
+FROM FILM f, PROJETTE p
+WHERE f.numf=p.numf
+AND nums=‘2'
+
+------------------------------------------
+—Question 9
+------------------------------------------
+SELECT DISTINCT f.real
+FROM FILM f, FILM f2
+WHERE f.numf != f2.numf
+AND f.real=f2.real 
+
+------------------------------------------
+—Question 10
+------------------------------------------
+
+SELECT f.titre
+FROM FILM f, JOUE j, ACTEUR a
+WHERE f.numf=j.numf
+AND j.numa=a.numa
+AND a.nom = 'Angelina Jolie'
+INTERSECT
+SELECT f.titre
+FROM FILM f, JOUE j, ACTEUR a
+WHERE f.numf=j.numf
+AND j.numa=a.numa
+AND a.nom = 'Brad Pitt’
+
+------------------------------------------
+—Question 11
+------------------------------------------
+
+SELECT p.numf
+FROM PROJETTE p
+MINUS 
+SELECT p.numf
+FROM Projette p,Projette p2
+WHERE p.datep<p2.datep
